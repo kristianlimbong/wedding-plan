@@ -254,22 +254,18 @@
             </button>
           </form>
 
-          <!-- Status Koneksi & Tombol Pengaturan Firebase Config -->
-          <div class="pt-3 border-t border-slate-100 flex items-center justify-between gap-2 text-xs">
+          <!-- Status Koneksi Otomatis Firebase -->
+          <div class="pt-3 border-t border-slate-100 flex items-center justify-center text-xs">
             <span id="authFirebaseStatusBadge" class="inline-flex items-center gap-1.5 font-semibold text-slate-600">
               <span class="w-2 h-2 rounded-full bg-amber-400"></span>
-              Memeriksa Firebase...
+              Menghubungkan ke Firebase...
             </span>
-            <button type="button" onclick="openFirebaseConfigModal()" class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold flex items-center gap-1.5 transition">
-              <i data-lucide="settings" class="w-3.5 h-3.5 text-rose-500"></i>
-              Konfigurasi Firebase
-            </button>
           </div>
         </div>
       </div>
 
       <p class="text-center text-[11px] text-slate-500">
-        Data anggaran, tabungan, dan checklist Anda tersimpan aman di Firebase Cloud dan dapat diakses dari Laptop, Tablet, maupun Handphone.
+        Data anggaran, tabungan, dan checklist Anda tersimpan aman di Cloud Firestore dan dapat diakses dari Laptop, Tablet, maupun Handphone.
       </p>
     </div>
   </main>
@@ -290,22 +286,18 @@
             <!-- Badge Akun Email -->
             <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/20 backdrop-blur-md border border-white/25 text-xs font-semibold">
               <i data-lucide="user-check" class="w-3.5 h-3.5 text-amber-200 shrink-0"></i>
-              <span id="headerUserEmail" class="truncate max-w-[180px] sm:max-w-[260px]">user@email.com</span>
+              <span id="headerUserEmail" class="truncate max-w-[200px] sm:max-w-[300px]">user@email.com</span>
             </div>
 
             <!-- Badge Status Sinkronisasi Cloud -->
             <div id="cloudSyncBadge" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/30 backdrop-blur-md border border-emerald-200/40 text-xs font-bold">
               <span id="cloudSyncDot" class="w-2 h-2 rounded-full bg-emerald-300 animate-pulse"></span>
-              <span id="cloudSyncText">Tersinkronisasi Cloud</span>
+              <span id="cloudSyncText">Tersinkron ke Firebase</span>
             </div>
           </div>
 
           <div class="flex items-center gap-2">
-            <button type="button" onclick="openFirebaseConfigModal()" class="px-3 py-1.5 rounded-xl bg-white/15 hover:bg-white/25 border border-white/25 text-white text-xs font-bold flex items-center gap-1.5 transition active:scale-95" title="Pengaturan Konfigurasi Firebase">
-              <i data-lucide="database" class="w-3.5 h-3.5 text-sky-200"></i>
-              <span class="hidden sm:inline">Config Firebase</span>
-            </button>
-            <button type="button" onclick="confirmLogout()" class="px-3 py-1.5 rounded-xl bg-rose-950/35 hover:bg-rose-950/55 border border-white/25 text-white text-xs font-extrabold flex items-center gap-1.5 transition active:scale-95">
+            <button type="button" onclick="confirmLogout()" class="px-3.5 py-1.5 rounded-xl bg-rose-950/35 hover:bg-rose-950/55 border border-white/25 text-white text-xs font-extrabold flex items-center gap-1.5 transition active:scale-95">
               <i data-lucide="log-out" class="w-3.5 h-3.5 text-rose-200"></i>
               <span>Keluar</span>
             </button>
@@ -426,24 +418,7 @@
           </p>
         </div>
 
-        <!-- KPI 2: Total Sudah Dibayar (Lunas + DP) & Sisa Tagihan -->
-        <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white p-4 sm:p-5 shadow-lg shadow-emerald-500/20 hover:-translate-y-0.5 transition duration-200">
-          <div class="absolute -right-6 -bottom-6 w-24 h-24 rounded-full bg-white/15 blur-xl pointer-events-none"></div>
-          <div class="flex items-start justify-between gap-2 mb-2">
-            <span class="text-xs sm:text-sm font-semibold text-emerald-100">Sudah Dibayar (Lunas + DP)</span>
-            <div class="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
-              <i data-lucide="badge-check" class="w-4 h-4 sm:w-5 sm:h-5 text-white"></i>
-            </div>
-          </div>
-          <div id="kpiTotalPaid" class="text-base sm:text-xl lg:text-2xl font-extrabold tracking-tight truncate">
-            Rp 0
-          </div>
-          <p id="kpiRemainingBillText" class="text-[11px] sm:text-xs text-emerald-100 mt-1.5 font-semibold truncate">
-            Sisa Tagihan: Rp 0
-          </p>
-        </div>
-
-        <!-- KPI 3: Total Dana Terkumpul (Dana Awal + Bulanan) & Persentase -->
+        <!-- KPI 2: Total Dana Terkumpul (Dana Awal + Bulanan) -->
         <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-violet-600 to-indigo-600 text-white p-4 sm:p-5 shadow-lg shadow-violet-500/20 hover:-translate-y-0.5 transition duration-200">
           <div class="absolute -right-6 -bottom-6 w-24 h-24 rounded-full bg-white/15 blur-xl pointer-events-none"></div>
           <div class="flex items-start justify-between gap-2 mb-2">
@@ -460,19 +435,36 @@
           </p>
         </div>
 
-        <!-- KPI 4: Progress Kesiapan Vendor & Checklist Persiapan -->
+        <!-- KPI 3: Total Sudah Dibayar (DP & Lunas) -->
+        <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white p-4 sm:p-5 shadow-lg shadow-emerald-500/20 hover:-translate-y-0.5 transition duration-200">
+          <div class="absolute -right-6 -bottom-6 w-24 h-24 rounded-full bg-white/15 blur-xl pointer-events-none"></div>
+          <div class="flex items-start justify-between gap-2 mb-2">
+            <span class="text-xs sm:text-sm font-semibold text-emerald-100">Total Sudah Dibayar (DP & Lunas)</span>
+            <div class="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
+              <i data-lucide="badge-check" class="w-4 h-4 sm:w-5 sm:h-5 text-white"></i>
+            </div>
+          </div>
+          <div id="kpiTotalPaid" class="text-base sm:text-xl lg:text-2xl font-extrabold tracking-tight truncate">
+            Rp 0
+          </div>
+          <p id="kpiPaidDetailMeta" class="text-[11px] sm:text-xs text-emerald-100 mt-1.5 font-semibold truncate">
+            0% terbayar • 0 vendor siap
+          </p>
+        </div>
+
+        <!-- KPI 4: Sisa Anggaran Belum Dibayar -->
         <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-amber-500 to-orange-500 text-white p-4 sm:p-5 shadow-lg shadow-amber-500/20 hover:-translate-y-0.5 transition duration-200">
           <div class="absolute -right-6 -bottom-6 w-24 h-24 rounded-full bg-white/15 blur-xl pointer-events-none"></div>
           <div class="flex items-start justify-between gap-2 mb-2">
-            <span class="text-xs sm:text-sm font-semibold text-amber-100">Kesiapan Vendor & Checklist</span>
+            <span class="text-xs sm:text-sm font-semibold text-amber-100">Sisa Anggaran Belum Dibayar</span>
             <div class="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
-              <i data-lucide="sparkles" class="w-4 h-4 sm:w-5 sm:h-5 text-white"></i>
+              <i data-lucide="hourglass" class="w-4 h-4 sm:w-5 sm:h-5 text-white"></i>
             </div>
           </div>
-          <div id="kpiOverallReadiness" class="text-base sm:text-xl lg:text-2xl font-extrabold tracking-tight truncate">
-            0% Siap
+          <div id="kpiRemainingBill" class="text-base sm:text-xl lg:text-2xl font-extrabold tracking-tight truncate">
+            Rp 0
           </div>
-          <p id="kpiReadinessDetail" class="text-[11px] sm:text-xs text-amber-100 mt-1.5 font-medium truncate">
+          <p id="kpiRemainingBillMeta" class="text-[11px] sm:text-xs text-amber-100 mt-1.5 font-medium truncate">
             Vendor 0% • Checklist 0%
           </p>
         </div>
@@ -1222,65 +1214,7 @@
     </div>
   </div>
 
-  <!-- ==================== MODAL 5: KONFIGURASI FIREBASE (#firebaseConfigModal) ==================== -->
-  <div id="firebaseConfigModal" onclick="handleBackdropClose(event, 'firebaseConfigModal')" class="hidden fixed inset-0 z-[110] bg-slate-900/60 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4">
-    <div class="bg-white w-full sm:max-w-xl rounded-t-3xl sm:rounded-3xl shadow-2xl border border-indigo-100 max-h-[92vh] flex flex-col overflow-hidden tab-fade" onclick="event.stopPropagation()">
-      <div class="px-5 py-4 bg-gradient-to-r from-indigo-600 via-violet-600 to-fuchsia-600 text-white flex items-center justify-between">
-        <div class="flex items-center gap-2">
-          <i data-lucide="flame" class="w-5 h-5 text-amber-300"></i>
-          <h3 class="font-serif text-lg font-bold">Konfigurasi Firebase Project</h3>
-        </div>
-        <button type="button" onclick="closeModal('firebaseConfigModal')" class="p-1.5 rounded-xl bg-white/20 hover:bg-white/30">
-          <i data-lucide="x" class="w-5 h-5"></i>
-        </button>
-      </div>
-
-      <div class="p-5 overflow-y-auto space-y-4 text-xs sm:text-sm">
-        <div class="p-3.5 rounded-2xl bg-indigo-50 border border-indigo-200/80 space-y-1.5 text-xs text-indigo-950">
-          <div class="font-extrabold flex items-center gap-1.5">
-            <i data-lucide="info" class="w-4 h-4 text-indigo-600"></i>
-            Panduan Singkat Pengaturan di Firebase Console:
-          </div>
-          <ol class="list-decimal list-inside space-y-1 text-indigo-900/90 leading-relaxed">
-            <li>Buka <strong>Firebase Console</strong> &rarr; <strong>Project Settings</strong> &rarr; salin objek <code>firebaseConfig</code> Anda.</li>
-            <li>Buka menu <strong>Authentication</strong> &rarr; tab <strong>Sign-in method</strong> &rarr; aktifkan provider <strong>Email/Password</strong>.</li>
-            <li>Buka menu <strong>Realtime Database</strong> &rarr; buat database dan atur Rules agar user terautentikasi dapat membaca/menulis pada path <code>wedding_dashboards/$uid</code>.</li>
-          </ol>
-        </div>
-
-        <form onsubmit="saveCustomFirebaseConfig(event)" class="space-y-3">
-          <div>
-            <label for="firebaseConfigTextarea" class="block text-xs font-bold text-slate-700 mb-1">
-              Tempel (Paste) Objek <code>firebaseConfig</code> (Format JSON atau JS Object):
-            </label>
-            <textarea id="firebaseConfigTextarea" rows="7" required placeholder='{
-  "apiKey": "AIzaSy...",
-  "authDomain": "project-anda.firebaseapp.com",
-  "databaseURL": "https://project-anda-default-rtdb.firebaseio.com",
-  "projectId": "project-anda",
-  "storageBucket": "project-anda.appspot.com",
-  "messagingSenderId": "1234567890",
-  "appId": "1:1234567890:web:abcdef"
-}' class="w-full p-3.5 rounded-2xl bg-slate-900 text-emerald-300 font-mono text-xs border border-slate-700 focus:outline-none focus:border-indigo-500"></textarea>
-          </div>
-
-          <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-100">
-            <button type="button" onclick="resetCustomFirebaseConfig()" class="px-3.5 py-2.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-bold transition">
-              Reset Konfigurasi
-            </button>
-            <div class="flex items-center gap-2">
-              <button type="button" onclick="closeModal('firebaseConfigModal')" class="px-4 py-2.5 rounded-xl bg-slate-100 text-slate-700 text-xs sm:text-sm font-semibold">Batal</button>
-              <button type="submit" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-fuchsia-600 text-white text-xs sm:text-sm font-extrabold shadow-md">
-                Simpan & Muat Ulang
-              </button>
-            </div>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-
-  <!-- ==================== MODAL 6: KONFIRMASI KUSTOM (#confirmModal) ==================== -->
+  <!-- ==================== MODAL 5: KONFIRMASI KUSTOM (#confirmModal) ==================== -->
   <div id="confirmModal" onclick="handleBackdropClose(event, 'confirmModal')" class="hidden fixed inset-0 z-[115] bg-slate-900/55 backdrop-blur-xs flex items-center justify-center p-4">
     <div class="bg-white w-full max-w-sm rounded-3xl shadow-2xl border border-rose-100 p-6 text-center space-y-4 tab-fade" onclick="event.stopPropagation()">
       <div class="w-12 h-12 rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center mx-auto">
@@ -1334,59 +1268,57 @@
      * =========================================================================
      */
     const DEFAULT_FIREBASE_CONFIG = {
-  apiKey: "AIzaSyApoz28BVUfw3_LRYV7P-aPNvnJd7SFfJM",
-  authDomain: "financial-a0485.firebaseapp.com",
-  databaseURL: "https://financial-a0485-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "financial-a0485",
-  storageBucket: "financial-a0485.firebasestorage.app",
-  messagingSenderId: "1083034905930",
-  appId: "1:1083034905930:web:1eff083b84d3205bde65b3",
-  measurementId: "G-KBYTR08JPL"
-};
+    apiKey: "AIzaSyApoz28BVUfw3_LRYV7P-aPNvnJd7SFfJM",
+    authDomain: "financial-a0485.firebaseapp.com",
+    databaseURL: "https://financial-a0485-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "financial-a0485",
+    storageBucket: "financial-a0485.firebasestorage.app",
+    messagingSenderId: "1083034905930",
+    appId: "1:1083034905930:web:1eff083b84d3205bde65b3",
+    measurementId: "G-KBYTR08JPL"
+  };
 
     const FIREBASE_CONFIG_STORAGE_KEY = 'wedding_firebase_config';
     const DATA_CACHE_PREFIX = 'wedding_cloud_cache_v4_';
 
-    // 1. RESOLUSI KONFIGURASI & INISIALISASI FIREBASE
-    function resolveFirebaseConfig() {
-      // Prioritas 1: Global environment config
-      if (typeof window.__firebase_config !== 'undefined' && window.__firebase_config) {
-        try {
-          const envCfg = typeof window.__firebase_config === 'string'
-            ? JSON.parse(window.__firebase_config)
-            : window.__firebase_config;
-          if (envCfg && envCfg.apiKey) return { config: envCfg, source: 'environment' };
-        } catch (e) {
-          console.warn('Gagal mem-parsing __firebase_config:', e);
-        }
-      }
+  <!-- ==================== FIREBASE MODULAR SDK v11 & LOGIKA UTAMA ==================== -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import {
+      getAuth,
+      signInWithEmailAndPassword,
+      createUserWithEmailAndPassword,
+      sendPasswordResetEmail,
+      updateProfile,
+      signOut,
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import {
+      getFirestore,
+      doc,
+      setDoc,
+      onSnapshot
+    } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-      // Prioritas 2: Konfigurasi tersimpan dari modal Konfigurasi Firebase
+    // 1. RESOLUSI OTOMATIS KONFIGURASI FIREBASE DARI ENVIRONMENT
+    const appId = typeof __app_id !== 'undefined' && __app_id
+      ? String(__app_id)
+      : 'wedding-financial-dashboard';
+
+    const firebaseConfig = (() => {
+      if (typeof __firebase_config === 'undefined' || !__firebase_config) return null;
       try {
-        const saved = localStorage.getItem(FIREBASE_CONFIG_STORAGE_KEY);
-        if (saved) {
-          const parsed = JSON.parse(saved);
-          if (parsed && parsed.apiKey) return { config: parsed, source: 'custom' };
-        }
-      } catch (e) {
-        console.warn('Gagal membaca wedding_firebase_config:', e);
+        return typeof __firebase_config === 'string'
+          ? JSON.parse(__firebase_config)
+          : __firebase_config;
+      } catch (err) {
+        console.error('Gagal membaca konfigurasi Firebase environment:', err);
+        return null;
       }
+    })();
 
-      // Prioritas 3: Fallback DEFAULT_FIREBASE_CONFIG
-      return { config: DEFAULT_FIREBASE_CONFIG, source: 'default' };
-    }
+    const DATA_CACHE_PREFIX = `wedding_firestore_cache_${appId}_`;
 
-    function isConfigConfigured(cfg) {
-      return Boolean(
-        cfg &&
-        cfg.apiKey &&
-        !cfg.apiKey.includes('GANTI_DENGAN') &&
-        cfg.projectId &&
-        !cfg.projectId.includes('project-anda')
-      );
-    }
-
-    const { config: activeFirebaseConfig, source: firebaseConfigSource } = resolveFirebaseConfig();
     let firebaseApp = null;
     let auth = null;
     let db = null;
@@ -1395,14 +1327,16 @@
     let unsubscribeCloudListener = null;
     let isLocalWriting = false;
 
-    try {
-      firebaseApp = initializeApp(activeFirebaseConfig);
-      auth = getAuth(firebaseApp);
-      db = getDatabase(firebaseApp);
-      firebaseReady = isConfigConfigured(activeFirebaseConfig);
-    } catch (initErr) {
-      console.error('Firebase initialization error:', initErr);
-      firebaseReady = false;
+    if (firebaseConfig && firebaseConfig.apiKey) {
+      try {
+        firebaseApp = initializeApp(firebaseConfig);
+        auth = getAuth(firebaseApp);
+        db = getFirestore(firebaseApp);
+        firebaseReady = true;
+      } catch (initErr) {
+        console.error('Firebase initialization error:', initErr);
+        firebaseReady = false;
+      }
     }
 
     // 2. SISTEM 10 KATEGORI & WARNA UNIK SESUAI SPESIFIKASI
@@ -1528,34 +1462,7 @@
           { id: 'mon-5', month: '2026-09', contributor: 'Mempelai Pria', amount: 5000000, notes: 'Setoran rutin September + lembur' },
           { id: 'mon-6', month: '2026-09', contributor: 'Mempelai Wanita', amount: 3500000, notes: 'Setoran rutin September' },
           { id: 'mon-7', month: '2026-10', contributor: 'Bonus / THR', amount: 10000000, notes: 'Alokasi bonus proyek triwulan III' },
-          { id: 'mon-8', month: '2026-11', contributor: 'Tabungan Bersama', amount: 8500000, notes: 'Setoran rutin bulan November' }
-        ],
-        checklist: [
-          { id: 'c-1', phase: 1, title: 'Diskusi visi pernikahan, konsep warna pastel & estimasi jumlah tamu (500 orang)', done: true },
-          { id: 'c-2', phase: 1, title: 'Pertemuan keluarga besar & pelaksanaan acara lamaran resmi', done: true },
-          { id: 'c-3', phase: 1, title: 'Menyusun rincian anggaran & membuka rekening tabungan bersama', done: true },
-          { id: 'c-4', phase: 1, title: 'Menentukan tanggal & jam akad nikah serta lokasi acara', done: true },
-          { id: 'c-5', phase: 2, title: 'Survey & pembayaran DP Gedung Grand Ballroom', done: true },
-          { id: 'c-6', phase: 2, title: 'Test food & booking paket Katering Utama + Gubukan', done: true },
-          { id: 'c-7', phase: 2, title: 'Booking vendor Dekorasi, Dokumentasi, MUA & Wedding Organizer', done: true },
-          { id: 'c-8', phase: 2, title: 'Booking MC & Akustik Band pengiring resepsi', done: false },
-          { id: 'c-9', phase: 3, title: 'Melakukan Tes Kesehatan Pra-Nikah (MCU) di laboratorium', done: true },
-          { id: 'c-10', phase: 3, title: 'Pemotretan Pre-Wedding & pemilihan foto untuk cetak kanvas', done: true },
-          { id: 'c-11', phase: 3, title: 'Mengurus surat pengantar N1-N4 di Kelurahan & pendaftaran KUA', done: false },
-          { id: 'c-12', phase: 3, title: 'Pemesanan cincin nikah, logam mulia mahar & kain seragam', done: false },
-          { id: 'c-13', phase: 3, title: 'Desain undangan cetak, website RSVP & pemesanan souvenir', done: false },
-          { id: 'c-14', phase: 4, title: 'Fitting final busana pengantin, orang tua & besan', done: false },
-          { id: 'c-15', phase: 4, title: 'Technical Meeting (TM) seluruh vendor & panitia keluarga', done: false },
-          { id: 'c-16', phase: 4, title: 'Pelunasan seluruh sisa tagihan vendor (H-14 s/d H-7)', done: false },
-          { id: 'c-17', phase: 4, title: 'Distribusi undangan fisik & penyebaran undangan digital', done: false },
-          { id: 'c-18', phase: 5, title: 'Gladi bersih prosesi akad nikah & pengecekan mahar/cincin', done: false },
-          { id: 'c-19', phase: 5, title: 'Pelaksanaan Akad Nikah & Resepsi Pernikahan (Hari-H)', done: false },
-          { id: 'c-20', phase: 5, title: 'Keberangkatan Bulan Madu ke Bali & Nusa Penida', done: false }
-        ]
-      };
-    }
-
-    // 4. STATE APLIKASI & SINKRONISASI CLOUD FIREBASE
+    // 4. STATE APLIKASI & SINKRONISASI CLOUD FIRESTORE
     let appData = getDefaultData();
     let activeTab = 'overview';
     let selectedCategoryFilter = 'ALL';
@@ -1564,6 +1471,28 @@
     let groupedBarChart = null;
     let savingsAccumulationChart = null;
     let countdownInterval = null;
+
+    // Membersihkan nilai undefined atau NaN sebelum dikirim ke Cloud Firestore
+    function sanitizeForFirestore(value) {
+      if (value === undefined) return null;
+      if (typeof value === 'number') {
+        return Number.isFinite(value) ? value : 0;
+      }
+      if (Array.isArray(value)) {
+        return value.map(item => sanitizeForFirestore(item));
+      }
+      if (value !== null && typeof value === 'object') {
+        const cleanObj = {};
+        Object.keys(value).forEach(key => {
+          const val = value[key];
+          if (val !== undefined) {
+            cleanObj[key] = sanitizeForFirestore(val);
+          }
+        });
+        return cleanObj;
+      }
+      return value;
+    }
 
     function normalizeAppData(raw, fallbackDisplayName) {
       const def = getDefaultData(fallbackDisplayName);
@@ -1606,46 +1535,61 @@
       } else if (state === 'synced') {
         badge.className = 'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/30 backdrop-blur-md border border-emerald-200/40 text-xs font-bold';
         dot.className = 'w-2 h-2 rounded-full bg-emerald-300';
-        text.textContent = customText || 'Tersinkronisasi Cloud';
+        text.textContent = customText || 'Tersinkron ke Firebase';
       } else {
-        badge.className = 'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-rose-950/40 backdrop-blur-md border border-rose-200/40 text-xs font-bold';
+        badge.className = 'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-rose-950/45 backdrop-blur-md border border-rose-200/40 text-xs font-bold';
         dot.className = 'w-2 h-2 rounded-full bg-rose-300';
-        text.textContent = customText || 'Offline / Cek Rules DB';
+        text.textContent = customText || 'Gagal Sync Cloud';
       }
     }
 
-    async function saveAppData() {
+    function getUserDashboardDocRef(uid) {
+      return doc(db, 'artifacts', appId, 'users', uid, 'wedding_dashboard', 'main');
+    }
+
+    async function saveToFirebase() {
       if (!currentUser) return;
-      // Simpan cache lokal per user
+
+      // Cadangan lokal per user.uid
       try {
         localStorage.setItem(DATA_CACHE_PREFIX + currentUser.uid, JSON.stringify(appData));
       } catch (e) {
-        console.warn('Local cache save warning:', e);
+        console.warn('Local cache warning:', e);
       }
 
       if (!db || !firebaseReady) {
-        setCloudSyncIndicator('error', 'Mode Lokal (Config Belum Diisi)');
+        setCloudSyncIndicator('error', 'Firebase Belum Terhubung');
         return;
       }
 
       try {
         isLocalWriting = true;
         setCloudSyncIndicator('saving', 'Menyimpan ke Cloud...');
-        const userDbRef = ref(db, `wedding_dashboards/${currentUser.uid}`);
-        await set(userDbRef, {
-          ...appData,
+
+        const userDocRef = getUserDashboardDocRef(currentUser.uid);
+        const cleanPayload = sanitizeForFirestore({
+          profile: appData.profile,
+          items: appData.items,
+          initialSavings: appData.initialSavings,
+          monthlySavings: appData.monthlySavings,
+          checklist: appData.checklist,
           ownerEmail: currentUser.email || '',
           updatedAt: new Date().toISOString()
         });
-        setCloudSyncIndicator('synced', 'Tersinkronisasi Cloud');
+
+        await setDoc(userDocRef, cleanPayload, { merge: true });
+        setCloudSyncIndicator('synced', 'Tersinkron ke Firebase');
       } catch (err) {
-        console.error('Firebase Realtime Database write error:', err);
-        setCloudSyncIndicator('error', 'Gagal Sync Cloud');
-        showToast('Gagal menyinkronkan ke Firebase Database. Periksa Rules atau koneksi.');
+        console.error('Cloud Firestore write error:', err);
+        setCloudSyncIndicator('error', 'Gagal Simpan ke Cloud');
+        showToast('Gagal menyimpan ke Firebase: ' + (err?.message || 'Periksa koneksi internet Anda.'));
       } finally {
         setTimeout(() => { isLocalWriting = false; }, 350);
       }
     }
+
+    // Alias agar seluruh handler tetap konsisten
+    const saveAppData = saveToFirebase;
 
     function attachUserRealtimeListener(user) {
       if (unsubscribeCloudListener) {
@@ -1653,7 +1597,7 @@
         unsubscribeCloudListener = null;
       }
 
-      // Muat cache lokal dulu jika ada agar tampilan instan
+      // Muat cadangan lokal terlebih dahulu agar tampilan instan saat membuka aplikasi
       try {
         const cached = localStorage.getItem(DATA_CACHE_PREFIX + user.uid);
         if (cached) {
@@ -1663,45 +1607,38 @@
       } catch (e) {}
 
       if (!db || !firebaseReady) {
-        setCloudSyncIndicator('error', 'Config Firebase Belum Lengkap');
+        setCloudSyncIndicator('error', 'Layanan Cloud Tidak Tersedia');
         return;
       }
 
       setCloudSyncIndicator('saving', 'Menyinkronkan Cloud...');
-      const userDbRef = ref(db, `wedding_dashboards/${user.uid}`);
+      const userDocRef = getUserDashboardDocRef(user.uid);
 
-      unsubscribeCloudListener = onValue(
-        userDbRef,
-        async (snapshot) => {
-          if (snapshot.exists()) {
-            const cloudVal = snapshot.val();
-            appData = normalizeAppData(cloudVal, user.displayName);
-            try {
-              localStorage.setItem(DATA_CACHE_PREFIX + user.uid, JSON.stringify(appData));
-            } catch (e) {}
-            if (!isLocalWriting) {
+      unsubscribeCloudListener = onSnapshot(
+        userDocRef,
+        async (docSnap) => {
+          if (docSnap.exists()) {
+            const cloudVal = docSnap.data();
+            // Hindari loop tulis-baca saat perangkat ini sedang menyimpan perubahan lokal
+            if (!isLocalWriting && !docSnap.metadata.hasPendingWrites) {
+              appData = normalizeAppData(cloudVal, user.displayName);
+              try {
+                localStorage.setItem(DATA_CACHE_PREFIX + user.uid, JSON.stringify(appData));
+              } catch (e) {}
               refreshAll();
             }
-            setCloudSyncIndicator('synced', 'Tersinkronisasi Cloud');
+            setCloudSyncIndicator('synced', 'Tersinkron ke Firebase');
           } else {
-            // User baru pertama kali masuk: inisialisasi data default (atau migrasi data lokal lama jika ada)
-            let initialPayload = getDefaultData(user.displayName);
-            try {
-              const legacyRaw = localStorage.getItem('wedding_festive_dashboard_v3');
-              if (legacyRaw) {
-                initialPayload = normalizeAppData(JSON.parse(legacyRaw), user.displayName);
-              }
-            } catch (e) {}
-
-            appData = initialPayload;
+            // Login pertama kali: inisialisasi data default pernikahan dan simpan langsung ke Firestore
+            appData = getDefaultData(user.displayName);
             refreshAll();
-            await saveAppData();
+            await saveToFirebase();
           }
         },
         (error) => {
-          console.error('Firebase onValue listener error:', error);
-          setCloudSyncIndicator('error', 'Akses Database Ditolak');
-          showToast('Tidak dapat membaca Realtime Database. Pastikan Rules mengizinkan akses user.');
+          console.error('Cloud Firestore onSnapshot error:', error);
+          setCloudSyncIndicator('error', 'Akses Cloud Gagal');
+          showToast('Gagal menyinkronkan data dari Firebase: ' + (error?.message || 'Akses ditolak'));
         }
       );
     }
@@ -1723,10 +1660,7 @@
         case 'auth/too-many-requests':
           return 'Terlalu banyak percobaan gagal. Tunggu beberapa saat sebelum mencoba lagi.';
         case 'auth/operation-not-allowed':
-          return 'Login Email/Password belum diaktifkan di Firebase Console (Authentication > Sign-in method).';
-        case 'auth/invalid-api-key':
-        case 'auth/configuration-not-found':
-          return 'Konfigurasi Firebase (API Key) belum valid. Klik tombol "Konfigurasi Firebase" di bawah untuk menempelkan config project Anda.';
+          return 'Metode login Email/Password belum diaktifkan pada proyek Firebase.';
         case 'auth/network-request-failed':
           return 'Koneksi internet terputus. Periksa jaringan Anda lalu coba lagi.';
         default:
@@ -1793,7 +1727,7 @@
       hideAuthAlert();
 
       if (!auth || !firebaseReady) {
-        showAuthAlert('error', 'Konfigurasi Firebase belum diisi! Klik tombol "Konfigurasi Firebase" di bawah untuk menempelkan firebaseConfig project Anda.');
+        showAuthAlert('error', 'Layanan autentikasi Firebase belum siap. Muat ulang halaman dan coba lagi.');
         return;
       }
 
@@ -1821,7 +1755,7 @@
       hideAuthAlert();
 
       if (!auth || !firebaseReady) {
-        showAuthAlert('error', 'Konfigurasi Firebase belum diisi! Klik tombol "Konfigurasi Firebase" di bawah untuk menempelkan firebaseConfig project Anda.');
+        showAuthAlert('error', 'Layanan autentikasi Firebase belum siap. Muat ulang halaman dan coba lagi.');
         return;
       }
 
@@ -1859,7 +1793,7 @@
     window.handleForgotPassword = async function() {
       hideAuthAlert();
       if (!auth || !firebaseReady) {
-        showAuthAlert('error', 'Konfigurasi Firebase belum diisi. Silakan atur konfigurasi terlebih dahulu.');
+        showAuthAlert('error', 'Layanan autentikasi Firebase belum siap. Muat ulang halaman dan coba lagi.');
         return;
       }
       const email = document.getElementById('loginEmail').value.trim();
@@ -1948,16 +1882,16 @@
         localStorage.setItem(FIREBASE_CONFIG_STORAGE_KEY, JSON.stringify(parsed));
         showToast('Konfigurasi Firebase disimpan! Memuat ulang...');
         setTimeout(() => window.location.reload(), 650);
-      } catch (err) {
-        showToast('Format konfigurasi tidak valid: ' + err.message);
+    // 6. STATUS KONEKSI FIREBASE DI LAYAR LOGIN
+    function updateAuthFirebaseStatusUI() {
+      const badge = document.getElementById('authFirebaseStatusBadge');
+      if (!badge) return;
+      if (firebaseReady) {
+        badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-500"></span><span class="text-emerald-700">Terhubung ke Firebase Cloud Authentication</span>`;
+      } else {
+        badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-rose-500"></span><span class="text-rose-700">Konfigurasi Firebase Environment Tidak Ditemukan</span>`;
       }
-    };
-
-    window.resetCustomFirebaseConfig = function() {
-      localStorage.removeItem(FIREBASE_CONFIG_STORAGE_KEY);
-      showToast('Konfigurasi kustom dihapus. Memuat ulang...');
-      setTimeout(() => window.location.reload(), 650);
-    };
+    }
 
     // 7. HELPER FORMATTER & STATUS
     function formatRp(num) {
@@ -2185,25 +2119,25 @@
       });
 
       const remainingBill = Math.max(0, totalEstimate - totalPaid);
+      const paidPct = totalEstimate > 0 ? Math.round((totalPaid / totalEstimate) * 100) : 0;
       const { initialTotal, monthlyTotal, grandTotal: totalSavings } = getSavingsTotals();
       const savPct = totalEstimate > 0 ? Math.round((totalSavings / totalEstimate) * 100) : 0;
 
       const vendorPct = appData.items.length > 0 ? Math.round((readyVendors / appData.items.length) * 100) : 0;
       const chkDone = appData.checklist.filter(t => t.done).length;
       const chkPct = appData.checklist.length > 0 ? Math.round((chkDone / appData.checklist.length) * 100) : 0;
-      const combinedReadiness = Math.round((vendorPct + chkPct) / 2);
 
       document.getElementById('kpiTotalEstimate').textContent = formatRp(totalEstimate);
       document.getElementById('kpiEstimateMeta').textContent = `${appData.items.length} item di 10 kategori`;
 
-      document.getElementById('kpiTotalPaid').textContent = formatRp(totalPaid);
-      document.getElementById('kpiRemainingBillText').textContent = `Sisa Tagihan: ${formatRp(remainingBill)}`;
-
       document.getElementById('kpiTotalSavings').textContent = formatRp(totalSavings);
       document.getElementById('kpiSavingsComparison').textContent = `${savPct}% target (Awal ${formatShortRp(initialTotal)} + Bln ${formatShortRp(monthlyTotal)})`;
 
-      document.getElementById('kpiOverallReadiness').textContent = `${combinedReadiness}% Siap`;
-      document.getElementById('kpiReadinessDetail').textContent = `Vendor ${vendorPct}% • Checklist ${chkPct}%`;
+      document.getElementById('kpiTotalPaid').textContent = formatRp(totalPaid);
+      document.getElementById('kpiPaidDetailMeta').textContent = `${paidPct}% terbayar • ${readyVendors}/${appData.items.length} vendor siap`;
+
+      document.getElementById('kpiRemainingBill').textContent = formatRp(remainingBill);
+      document.getElementById('kpiRemainingBillMeta').textContent = `Vendor ${vendorPct}% • Checklist ${chkPct}%`;
     }
 
     // 11. TAB 1: RINGKASAN, GRAFIK, VENDOR JATUH TEMPO & 10 KATEGORI
@@ -3538,7 +3472,7 @@
       if (!auth) {
         document.getElementById('authLoadingScreen').classList.add('hidden');
         document.getElementById('authGateScreen').classList.remove('hidden');
-        showAuthAlert('error', 'Firebase gagal diinisialisasi. Klik "Konfigurasi Firebase" untuk memasukkan pengaturan project Anda.');
+        showAuthAlert('error', 'Konfigurasi Firebase environment tidak ditemukan. Pastikan aplikasi dijalankan pada lingkungan yang terhubung ke Firebase.');
         return;
       }
 
@@ -3549,7 +3483,10 @@
           currentUser = user;
           document.getElementById('authGateScreen').classList.add('hidden');
           document.getElementById('mainDashboardApp').classList.remove('hidden');
-          document.getElementById('headerUserEmail').textContent = user.email || user.displayName || 'Akun Terdaftar';
+          const accountLabel = user.displayName
+            ? `${user.displayName} (${user.email})`
+            : (user.email || 'Akun Terdaftar');
+          document.getElementById('headerUserEmail').textContent = accountLabel;
 
           appData = getDefaultData(user.displayName);
           refreshAll();
@@ -3572,7 +3509,7 @@
     // Tutup modal saat menekan tombol Escape
     window.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
-        ['coupleModal', 'itemModal', 'quickPayModal', 'checklistModal', 'firebaseConfigModal', 'confirmModal'].forEach(closeModal);
+        ['coupleModal', 'itemModal', 'quickPayModal', 'checklistModal', 'confirmModal'].forEach(closeModal);
       }
     });
 
