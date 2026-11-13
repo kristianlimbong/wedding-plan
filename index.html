@@ -1094,7 +1094,7 @@
     </div>
   </div>
 
-  <!-- MODAL 6: KELOLA KATEGORI (BARU) -->
+  <!-- MODAL 6: KELOLA KATEGORI -->
   <div id="categoryManagerModal" onclick="handleBackdropClose(event, 'categoryManagerModal')" class="hidden fixed inset-0 z-[105] bg-slate-900/55 backdrop-blur-xs flex items-center justify-center p-4">
     <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl border border-rose-100 overflow-hidden tab-fade flex flex-col max-h-[90vh]" onclick="event.stopPropagation()">
       <div class="px-5 py-4 bg-gradient-to-r from-rose-500 to-fuchsia-600 text-white flex items-center justify-between shrink-0">
@@ -1118,7 +1118,7 @@
           <div class="flex gap-3">
             <div class="flex-1">
               <label class="block text-xs font-bold text-slate-700 mb-1">Warna *</label>
-              <input type="color" id="catFormColor" required value="#F43F5E" class="w-full h-10 rounded-xl cursor-pointer border border-slate-200 p-1" />
+              <input type="color" id="catFormColor" required value="#f43f5e" class="w-full h-10 rounded-xl cursor-pointer border border-slate-200 p-1" />
             </div>
             <div class="flex items-end">
               <button type="submit" id="catSubmitBtn" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-rose-500 to-fuchsia-600 text-white text-sm font-bold shadow-md w-full">Simpan</button>
@@ -1189,18 +1189,18 @@
       firebaseReady = false;
     }
 
-    // 2. SISTEM DEFAULT KATEGORI (KINI MENJADI BAGIAN DARI appData.categories AGAR BISA DIEDIT)
+    // 2. SISTEM DEFAULT KATEGORI DENGAN ID UNIK
     const DEFAULT_CATEGORIES = [
-      { id: 'cat-1', name: 'Lamaran & Seserahan', color: '#EC4899', bgSoft: 'rgba(236,72,153,0.15)', textDark: '#EC4899' },
-      { id: 'cat-2', name: 'Administrasi & KUA/Catatan Sipil', color: '#6366F1', bgSoft: 'rgba(99,102,241,0.15)', textDark: '#6366F1' },
-      { id: 'cat-3', name: 'Venue & Dekorasi', color: '#8B5CF6', bgSoft: 'rgba(139,92,246,0.15)', textDark: '#8B5CF6' },
-      { id: 'cat-4', name: 'Catering & Kue Pengantin', color: '#F59E0B', bgSoft: 'rgba(245,158,11,0.15)', textDark: '#F59E0B' },
-      { id: 'cat-5', name: 'Busana & Rias', color: '#F43F5E', bgSoft: 'rgba(244,63,94,0.15)', textDark: '#F43F5E' },
-      { id: 'cat-6', name: 'Dokumentasi Foto & Video', color: '#0EA5E9', bgSoft: 'rgba(14,165,233,0.15)', textDark: '#0EA5E9' },
-      { id: 'cat-7', name: 'Undangan & Souvenir', color: '#14B8A6', bgSoft: 'rgba(20,184,166,0.15)', textDark: '#14B8A6' },
-      { id: 'cat-8', name: 'Hiburan, MC & Sound System', color: '#10B981', bgSoft: 'rgba(16,185,129,0.15)', textDark: '#10B981' },
-      { id: 'cat-9', name: 'Transportasi & Akomodasi', color: '#F97316', bgSoft: 'rgba(249,115,22,0.15)', textDark: '#F97316' },
-      { id: 'cat-10', name: 'Cincin Nikah, Mahar & Bulan Madu', color: '#D946EF', bgSoft: 'rgba(217,70,239,0.15)', textDark: '#D946EF' }
+      { id: 'cat-1', name: 'Lamaran & Seserahan', color: '#ec4899', bgSoft: 'rgba(236,72,153,0.15)', textDark: '#ec4899' },
+      { id: 'cat-2', name: 'Administrasi & KUA/Catatan Sipil', color: '#6366f1', bgSoft: 'rgba(99,102,241,0.15)', textDark: '#6366f1' },
+      { id: 'cat-3', name: 'Venue & Dekorasi', color: '#8b5cf6', bgSoft: 'rgba(139,92,246,0.15)', textDark: '#8b5cf6' },
+      { id: 'cat-4', name: 'Catering & Kue Pengantin', color: '#f59e0b', bgSoft: 'rgba(245,158,11,0.15)', textDark: '#f59e0b' },
+      { id: 'cat-5', name: 'Busana & Rias', color: '#f43f5e', bgSoft: 'rgba(244,63,94,0.15)', textDark: '#f43f5e' },
+      { id: 'cat-6', name: 'Dokumentasi Foto & Video', color: '#0ea5e9', bgSoft: 'rgba(14,165,233,0.15)', textDark: '#0ea5e9' },
+      { id: 'cat-7', name: 'Undangan & Souvenir', color: '#14b8a6', bgSoft: 'rgba(20,184,166,0.15)', textDark: '#14b8a6' },
+      { id: 'cat-8', name: 'Hiburan, MC & Sound System', color: '#10b981', bgSoft: 'rgba(16,185,129,0.15)', textDark: '#10b981' },
+      { id: 'cat-9', name: 'Transportasi & Akomodasi', color: '#f97316', bgSoft: 'rgba(249,115,22,0.15)', textDark: '#f97316' },
+      { id: 'cat-10', name: 'Cincin Nikah, Mahar & Bulan Madu', color: '#d946ef', bgSoft: 'rgba(217,70,239,0.15)', textDark: '#d946ef' }
     ];
 
     const PHASE_CONFIG = [
@@ -1212,17 +1212,17 @@
     ];
 
     const INITIAL_CAT_COLORS = {
-      'Tabungan Awal Mempelai Pria': '#0EA5E9',
-      'Tabungan Awal Mempelai Wanita': '#EC4899',
-      'Kontribusi Orang Tua / Keluarga': '#8B5CF6',
-      'Dana Awal Lainnya': '#6366F1'
+      'Tabungan Awal Mempelai Pria': '#0ea5e9',
+      'Tabungan Awal Mempelai Wanita': '#ec4899',
+      'Kontribusi Orang Tua / Keluarga': '#8b5cf6',
+      'Dana Awal Lainnya': '#6366f1'
     };
 
     const MONTHLY_CONTRIBUTOR_COLORS = {
-      'Mempelai Pria': '#0284C7',
-      'Mempelai Wanita': '#DB2777',
-      'Tabungan Bersama': '#7C3AED',
-      'Bonus / THR': '#D97706',
+      'Mempelai Pria': '#0284c7',
+      'Mempelai Wanita': '#db2777',
+      'Tabungan Bersama': '#7c3aed',
+      'Bonus / THR': '#d97706',
       'Lainnya': '#059669'
     };
 
@@ -1386,7 +1386,11 @@
           engagementDate: p.engagementDate || def.profile.engagementDate,
           location: p.location || def.profile.location
         },
-        categories: raw.categories !== undefined ? ensureArrayFromRTDB(raw.categories, []) : def.categories,
+        categories: raw.categories !== undefined ? ensureArrayFromRTDB(raw.categories, []).map((c, idx) => ({
+          ...c,
+          id: c.id || ('cat-migrated-' + idx),
+          color: (c.color || '#f43f5e').toLowerCase()
+        })) : def.categories,
         items: raw.items !== undefined ? ensureArrayFromRTDB(raw.items, []) : def.items,
         initialSavings: rawInitial !== undefined ? ensureArrayFromRTDB(rawInitial, []) : [],
         monthlySavings: raw.monthlySavings !== undefined ? ensureArrayFromRTDB(raw.monthlySavings, []) : [],
@@ -1497,7 +1501,7 @@
       );
     }
 
-    // 5. FIREBASE AUTHENTICATION (SKIP ERROR DETAILS)
+    // 5. FIREBASE AUTHENTICATION
     function translateFirebaseAuthError(err) {
       return err?.message || 'Terjadi kesalahan autentikasi.';
     }
@@ -1686,11 +1690,10 @@
       return `${months[parseInt(m, 10) - 1] || m} '${y.slice(-2)}`;
     }
 
-    // Lookup ke `appData.categories` (dulu CATEGORY_CONFIG)
     function getCategoryStyle(catName) {
       return appData.categories.find(c => c.name === catName) || {
         name: catName,
-        color: '#94A3B8',
+        color: '#94a3b8',
         bgSoft: 'rgba(148,163,184,0.15)',
         textDark: '#475569'
       };
@@ -1824,7 +1827,7 @@
       document.getElementById('formGroomName').value = appData.profile.groomName || 'Raka';
       document.getElementById('formBrideName').value = appData.profile.brideName || 'Nadya';
       document.getElementById('formWeddingDate').value = appData.profile.weddingDate || '2027-06-20';
-      document.getElementById('formEngagementDate').value = appData.profile.engagementDate || '2026-08-15';
+      document.getElementById('formEngagementDate').value = appData.profile.engagementDate || '';
       document.getElementById('formEventLocation').value = appData.profile.location || 'Jakarta Selatan';
       openModal('coupleModal');
     };
@@ -1896,7 +1899,6 @@
     }
 
     function renderCharts(totalEstimate) {
-      // Maps to appData.categories
       const stats = appData.categories.map(cat => {
         const items = appData.items.filter(i => i.category === cat.name);
         const est = items.reduce((s, i) => s + (Number(i.estimate) || 0), 0);
@@ -2454,7 +2456,7 @@
         return;
       }
       listEl.innerHTML = appData.initialSavings.map(item => {
-        const color = INITIAL_CAT_COLORS[item.category] || '#6366F1';
+        const color = INITIAL_CAT_COLORS[item.category] || '#6366f1';
         return `
           <div class="p-3.5 rounded-2xl bg-white/90 border border-slate-100 shadow-xs flex items-start justify-between gap-3" style="border-left: 5px solid ${color}">
             <div class="min-w-0 flex-1">
@@ -2560,7 +2562,7 @@
         return;
       }
       listEl.innerHTML = filtered.map(item => {
-        const color = MONTHLY_CONTRIBUTOR_COLORS[item.contributor] || '#7C3AED';
+        const color = MONTHLY_CONTRIBUTOR_COLORS[item.contributor] || '#7c3aed';
         return `
           <div class="p-3.5 rounded-2xl bg-white/90 border border-slate-100 shadow-xs flex items-center justify-between gap-3" style="border-left: 5px solid ${color}">
             <div class="min-w-0 flex-1">
@@ -2740,7 +2742,7 @@
       renderChecklist(); renderKPICards(); await saveAppData(); showToast('Tugas dihapus.');
     };
 
-    // 15. EKSPOR CSV, BACKUP/IMPORT JSON, RESET DATA & KATEGORI (MODIFIKASI)
+    // 15. EKSPOR CSV, BACKUP/IMPORT JSON, RESET DATA & KATEGORI (CRUD DIPERBAIKI)
     window.exportToCSV = function() {
       const budgetHeaders = ['No', 'Kategori', 'Nama Item', 'Vendor', 'Estimasi Biaya (Rp)', 'Sudah Dibayar (Rp)', 'Sisa Tagihan (Rp)', 'Status', 'Jatuh Tempo', 'Catatan'];
       const budgetRows = appData.items.map((item, idx) => {
@@ -2783,26 +2785,18 @@
       reader.readAsText(file);
     };
 
-    // LOGIKA RESET DATA 0 RUPIAH
     window.confirmResetData = function() {
       openConfirmModal(
         'Reset Data Keuangan Menjadi Nol?',
         'PERINGATAN: Semua nilai estimasi, biaya terbayar, dan tabungan Anda akan di-reset menjadi 0. Nama item dan kategori akan tetap dipertahankan.',
         async () => {
-          // 1. Nolkan estimasi dan terbayar di item anggaran
           appData.items.forEach(item => {
             item.estimate = 0;
             item.paid = 0;
             item.status = 'Belum Dibayar';
           });
-          // 2. Nolkan tabungan awal
-          appData.initialSavings.forEach(item => {
-            item.amount = 0;
-          });
-          // 3. Nolkan tabungan bulanan
-          appData.monthlySavings.forEach(item => {
-            item.amount = 0;
-          });
+          appData.initialSavings.forEach(item => { item.amount = 0; });
+          appData.monthlySavings.forEach(item => { item.amount = 0; });
 
           refreshAll();
           await saveAppData();
@@ -2811,13 +2805,19 @@
       );
     };
 
-    // FUNGSI PENGELOLAAN KATEGORI (CRUD)
+    // FUNGSI PENGELOLAAN KATEGORI (DIPERBAIKI)
     window.openCategoryManager = function() {
+      appData.categories.forEach((c, idx) => {
+         if (!c.id) c.id = 'cat-migrated-' + Date.now() + '-' + idx;
+         if (c.color) c.color = c.color.toLowerCase();
+      });
+
       renderCategoryManagerList();
+      
       document.getElementById('catFormId').value = '';
       document.getElementById('catFormName').value = '';
-      document.getElementById('catFormColor').value = '#F43F5E';
-      document.getElementById('catSubmitBtn').textContent = 'Simpan';
+      document.getElementById('catFormColor').value = '#f43f5e';
+      document.getElementById('catSubmitBtn').textContent = 'Simpan Kategori Baru';
       openModal('categoryManagerModal');
     };
 
@@ -2836,8 +2836,8 @@
             <span class="text-sm font-bold text-slate-800">${escapeHTML(c.name)}</span>
           </div>
           <div class="flex items-center gap-1">
-            <button type="button" onclick="editCategoryInit('${c.id}')" class="p-1.5 text-slate-400 hover:text-indigo-600 transition"><i data-lucide="pencil" class="w-4 h-4"></i></button>
-            <button type="button" onclick="deleteCategory('${c.id}')" class="p-1.5 text-slate-400 hover:text-rose-600 transition"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+            <button type="button" onclick="editCategoryInit('${c.id}')" class="p-1.5 text-slate-400 hover:text-indigo-600 transition" title="Edit Kategori"><i data-lucide="pencil" class="w-4 h-4"></i></button>
+            <button type="button" onclick="deleteCategory('${c.id}')" class="p-1.5 text-slate-400 hover:text-rose-600 transition" title="Hapus Kategori"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
           </div>
         </div>
       `).join('');
@@ -2847,19 +2847,29 @@
     window.editCategoryInit = function(id) {
       const cat = appData.categories.find(c => c.id === id);
       if (!cat) return;
+      
       document.getElementById('catFormId').value = cat.id;
       document.getElementById('catFormName').value = cat.name;
-      document.getElementById('catFormColor').value = cat.color;
-      document.getElementById('catSubmitBtn').textContent = 'Update';
+
+      let safeColor = cat.color || '#f43f5e';
+      document.getElementById('catFormColor').value = safeColor.toLowerCase();
+
+      document.getElementById('catSubmitBtn').textContent = 'Update Kategori';
+      document.getElementById('catFormName').focus();
     };
 
     window.saveCategory = async function(e) {
       e.preventDefault();
       const id = document.getElementById('catFormId').value;
       const name = document.getElementById('catFormName').value.trim();
-      const color = document.getElementById('catFormColor').value;
+      const color = document.getElementById('catFormColor').value.toLowerCase();
 
-      // Konversi Hex ke RGBA untuk background lembut (15% opacity)
+      const isDuplicate = appData.categories.some(c => c.name.toLowerCase() === name.toLowerCase() && c.id !== id);
+      if (isDuplicate) {
+        showToast('Gagal: Nama kategori sudah digunakan!');
+        return;
+      }
+
       let r = parseInt(color.slice(1, 3), 16);
       let g = parseInt(color.slice(3, 5), 16);
       let b = parseInt(color.slice(5, 7), 16);
@@ -2873,22 +2883,23 @@
         if (idx !== -1) {
           const oldName = appData.categories[idx].name;
           if (oldName !== name) {
-            // Update nama kategori pada semua item terkait agar tidak terpisah
             appData.items.forEach(item => { if (item.category === oldName) item.category = name; });
             appData.initialSavings.forEach(item => { if (item.category === oldName) item.category = name; });
             if (selectedCategoryFilter === oldName) selectedCategoryFilter = name;
           }
           appData.categories[idx] = payload;
         }
-        showToast('Kategori diperbarui!');
+        showToast('Kategori berhasil diperbarui! ✨');
       } else {
         appData.categories.push(payload);
-        showToast('Kategori baru ditambahkan!');
+        showToast('Kategori baru ditambahkan! ✨');
       }
 
       document.getElementById('catFormId').value = '';
       document.getElementById('catFormName').value = '';
-      document.getElementById('catSubmitBtn').textContent = 'Simpan';
+      document.getElementById('catFormColor').value = '#f43f5e';
+      document.getElementById('catSubmitBtn').textContent = 'Simpan Kategori Baru';
+      
       renderCategoryManagerList();
       refreshAll();
       await saveAppData();
