@@ -132,7 +132,7 @@
       </div>
       <div>
         <h2 class="font-serif text-xl font-bold text-slate-900">Memeriksa Sesi Akun...</h2>
-        <p class="text-xs text-slate-500 mt-1">Menghubungkan ke layanan autentikasi Firebase & Cloud Database</p>
+        <p class="text-xs text-slate-500 mt-1">Menghubungkan ke layanan autentikasi Firebase & Cloud Realtime Database</p>
       </div>
       <div class="w-full h-2 bg-rose-100 rounded-full overflow-hidden">
         <div class="h-full rainbow-bar rounded-full w-3/4"></div>
@@ -153,7 +153,7 @@
           </div>
           <span class="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-white/20 text-[11px] font-bold tracking-wide mb-1.5">
             <i data-lucide="shield-check" class="w-3.5 h-3.5 text-amber-200"></i>
-            Firebase Cloud Sync
+            Firebase Realtime Sync
           </span>
           <h1 class="font-serif text-2xl sm:text-3xl font-extrabold tracking-tight">Wedding Planner</h1>
           <p class="text-xs sm:text-sm text-white/90 mt-1">Kelola keuangan & progress pernikahan dalam satu akun terpadu</p>
@@ -265,7 +265,7 @@
       </div>
 
       <p class="text-center text-[11px] text-slate-500">
-        Data anggaran, tabungan, dan checklist Anda tersimpan aman di Cloud Firestore dan dapat diakses dari Laptop, Tablet, maupun Handphone.
+        Data anggaran, tabungan, dan checklist Anda tersimpan aman di Firebase Realtime Database dan dapat diakses dari Laptop, Tablet, maupun Handphone.
       </p>
     </div>
   </main>
@@ -1239,7 +1239,7 @@
     <span id="toastText">Tersimpan!</span>
   </div>
 
-  <!-- ==================== FIREBASE MODULAR SDK & LOGIKA UTAMA ==================== -->
+  <!-- ==================== FIREBASE MODULAR SDK v11 & LOGIKA UTAMA ==================== -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
     import {
@@ -1258,66 +1258,19 @@
       onValue
     } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js";
 
-    /**
-     * =========================================================================
-     * PANDUAN KONFIGURASI FIREBASE:
-     * 1. Jika environment menyediakan `window.__firebase_config`, aplikasi otomatis
-     *    menggunakannya.
-     * 2. Anda juga dapat mengisi objek `DEFAULT_FIREBASE_CONFIG` di bawah ini
-     *    atau langsung menempelkannya lewat tombol "Konfigurasi Firebase" di UI.
-     * =========================================================================
-     */
-    const DEFAULT_FIREBASE_CONFIG = {
-    apiKey: "AIzaSyApoz28BVUfw3_LRYV7P-aPNvnJd7SFfJM",
-    authDomain: "financial-a0485.firebaseapp.com",
-    databaseURL: "https://financial-a0485-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "financial-a0485",
-    storageBucket: "financial-a0485.firebasestorage.app",
-    messagingSenderId: "1083034905930",
-    appId: "1:1083034905930:web:1eff083b84d3205bde65b3",
-    measurementId: "G-KBYTR08JPL"
-  };
+    // 1. KONFIGURASI PROYEK FIREBASE REALTIME DATABASE ANDA
+    const firebaseConfig = {
+      apiKey: "AIzaSyApoz28BVUfw3_LRYV7P-aPNvnJd7SFfJM",
+      authDomain: "financial-a0485.firebaseapp.com",
+      databaseURL: "https://financial-a0485-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "financial-a0485",
+      storageBucket: "financial-a0485.firebasestorage.app",
+      messagingSenderId: "1083034905930",
+      appId: "1:1083034905930:web:1eff083b84d3205bde65b3",
+      measurementId: "G-KBYTR08JPL"
+    };
 
-    const FIREBASE_CONFIG_STORAGE_KEY = 'wedding_firebase_config';
-    const DATA_CACHE_PREFIX = 'wedding_cloud_cache_v4_';
-
-  <!-- ==================== FIREBASE MODULAR SDK v11 & LOGIKA UTAMA ==================== -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-    import {
-      getAuth,
-      signInWithEmailAndPassword,
-      createUserWithEmailAndPassword,
-      sendPasswordResetEmail,
-      updateProfile,
-      signOut,
-      onAuthStateChanged
-    } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-    import {
-      getFirestore,
-      doc,
-      setDoc,
-      onSnapshot
-    } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-    // 1. RESOLUSI OTOMATIS KONFIGURASI FIREBASE DARI ENVIRONMENT
-    const appId = typeof __app_id !== 'undefined' && __app_id
-      ? String(__app_id)
-      : 'wedding-financial-dashboard';
-
-    const firebaseConfig = (() => {
-      if (typeof __firebase_config === 'undefined' || !__firebase_config) return null;
-      try {
-        return typeof __firebase_config === 'string'
-          ? JSON.parse(__firebase_config)
-          : __firebase_config;
-      } catch (err) {
-        console.error('Gagal membaca konfigurasi Firebase environment:', err);
-        return null;
-      }
-    })();
-
-    const DATA_CACHE_PREFIX = `wedding_firestore_cache_${appId}_`;
+    const DATA_CACHE_PREFIX = `wedding_rtdb_cache_${firebaseConfig.projectId}_`;
 
     let firebaseApp = null;
     let auth = null;
@@ -1326,17 +1279,16 @@
     let currentUser = null;
     let unsubscribeCloudListener = null;
     let isLocalWriting = false;
+    let saveDebounceTimer = null;
 
-    if (firebaseConfig && firebaseConfig.apiKey) {
-      try {
-        firebaseApp = initializeApp(firebaseConfig);
-        auth = getAuth(firebaseApp);
-        db = getFirestore(firebaseApp);
-        firebaseReady = true;
-      } catch (initErr) {
-        console.error('Firebase initialization error:', initErr);
-        firebaseReady = false;
-      }
+    try {
+      firebaseApp = initializeApp(firebaseConfig);
+      auth = getAuth(firebaseApp);
+      db = getDatabase(firebaseApp);
+      firebaseReady = true;
+    } catch (initErr) {
+      console.error('Firebase initialization error:', initErr);
+      firebaseReady = false;
     }
 
     // 2. SISTEM 10 KATEGORI & WARNA UNIK SESUAI SPESIFIKASI
@@ -1436,33 +1388,54 @@
           { id: 'w-21', name: 'Buku Tamu Custom, Kotak Angpao & Perlengkapan Akad', category: 'Undangan & Souvenir', vendor: 'Crafty Wedding Store', estimate: 750000, paid: 750000, status: 'Lunas', dueDate: '2026-11-10', notes: 'Sudah dibeli' },
 
           // 8. Hiburan, MC & Sound System (3 item)
-          { id: 'w-22', name: 'Jasa Wedding Organizer (WO) Hari-H (8 Crew)', category: 'Hiburan, MC & Sound System', vendor: 'Harmoni Wedding Planner', estimate: 6500000, paid: 2500000, status: 'DP', dueDate: '2027-04-28', notes: 'Mengatur rundown dari subuh hingga acara selesai' },
-          { id: 'w-23', name: 'MC Profesional Akad & Resepsi', category: 'Hiburan, MC & Sound System', vendor: 'Bagas Prasetyo MC', estimate: 2000000, paid: 1000000, status: 'DP', dueDate: '2027-04-22', notes: 'Bilingual Indonesia - Inggris' },
-          { id: 'w-24', name: 'Akustik Band Romantis & Sound System 3000W', category: 'Hiburan, MC & Sound System', vendor: 'Senandung Akustik & Audio', estimate: 4200000, paid: 0, status: 'Belum Dibayar', dueDate: '2027-03-20', notes: 'Formasi vokal, gitar, keyboard & saxophone' },
+          { id: 'w-22', name: 'Jasa Master of Ceremony (MC) Akad & Resepsi', category: 'Hiburan, MC & Sound System', vendor: 'Rian & Sarah Professional MC', estimate: 2500000, paid: 1000000, status: 'DP', dueDate: '2027-04-10', notes: 'MC bilingual & berpengalaman memandu adat' },
+          { id: 'w-23', name: 'Live Acoustic Band & Sound System (500 Watt)', category: 'Hiburan, MC & Sound System', vendor: 'Harmoni Wedding Music', estimate: 4500000, paid: 2000000, status: 'DP', dueDate: '2027-04-12', notes: '2 vokalis, keyboard, gitar akustik & sound set' },
+          { id: 'w-24', name: 'Peralatan Genset Cadangan 40 KVA', category: 'Hiburan, MC & Sound System', vendor: 'PowerMax Genset Rent', estimate: 1500000, paid: 0, status: 'Belum Dibayar', dueDate: '2027-05-10', notes: 'Antisipasi pemadaman listrik dari PLN' },
 
-          // 9. Transportasi & Akomodasi (2 item)
-          { id: 'w-25', name: 'Sewa Mobil Pengantin (Alphard + Dekorasi Bunga)', category: 'Transportasi & Akomodasi', vendor: 'Royal Wedding Car', estimate: 2500000, paid: 1000000, status: 'DP', dueDate: '2027-05-10', notes: 'Termasuk BBM & driver berjas selama 12 jam' },
-          { id: 'w-26', name: 'Akomodasi Hotel Keluarga Besar Luar Kota (4 Kamar)', category: 'Transportasi & Akomodasi', vendor: 'Aston Hotel Near Venue', estimate: 3600000, paid: 0, status: 'Belum Dibayar', dueDate: '2027-05-15', notes: 'Check-in H-1 untuk keluarga inti' },
+          // 9. Transportasi & Akomodasi (3 item)
+          { id: 'w-25', name: 'Sewa Mobil Pengantin Mewah (Alphard / Mercedes)', category: 'Transportasi & Akomodasi', vendor: 'Royal Wedding Car Rental', estimate: 2800000, paid: 1400000, status: 'DP', dueDate: '2027-04-01', notes: 'Termasuk sopir profesional & dekorasi pita mobil' },
+          { id: 'w-26', name: 'Kamar Hotel Suite Honeymoon & Keluarga (2 Malam)', category: 'Transportasi & Akomodasi', vendor: 'Hotel Grand Sahid Jaya', estimate: 3600000, paid: 3600000, status: 'Lunas', dueDate: '2027-02-14', notes: '1 kamar suite pengantin + 2 kamar deluxe keluarga' },
+          { id: 'w-27', name: 'Bus / Transportasi Keluarga Besar (2 Unit)', category: 'Transportasi & Akomodasi', vendor: 'TransWisata Rent', estimate: 2400000, paid: 0, status: 'Belum Dibayar', dueDate: '2027-04-20', notes: 'Antar jemput keluarga dari bandara / stasiun' },
 
-          // 10. Cincin Nikah, Mahar & Bulan Madu (3 item)
-          { id: 'w-27', name: 'Sepasang Cincin Nikah Palladium & Emas', category: 'Cincin Nikah, Mahar & Bulan Madu', vendor: 'Sovia Jewelry', estimate: 7800000, paid: 4000000, status: 'DP', dueDate: '2027-02-18', notes: 'Gravir nama pasangan di bagian dalam cincin' },
-          { id: 'w-28', name: 'Mahar Logam Mulia 10gr & Bingkai Kaligrafi', category: 'Cincin Nikah, Mahar & Bulan Madu', vendor: 'Butik Antam & Galeri Mahar', estimate: 15500000, paid: 8000000, status: 'DP', dueDate: '2027-03-10', notes: 'Sudah siap 5gr pertama, sisa 5gr + bingkai' },
-          { id: 'w-29', name: 'Paket Bulan Madu Bali & Nusa Penida (4H3M)', category: 'Cincin Nikah, Mahar & Bulan Madu', vendor: 'Garuda & Private Pool Villa', estimate: 8500000, paid: 2500000, status: 'DP', dueDate: '2027-05-18', notes: 'Tiket PP & private villa Ubud' }
+          // 10. Cincin Nikah, Mahar & Bulan Madu (2 item)
+          { id: 'w-28', name: 'Cincin Nikah Platinum & Emas Kuning (Sepasang)', category: 'Cincin Nikah, Mahar & Bulan Madu', vendor: 'The Palace Jeweler', estimate: 8500000, paid: 4000000, status: 'DP', dueDate: '2027-03-01', notes: 'Gratis grafir nama & kotak cincin beludru' },
+          { id: 'w-29', name: 'Paket Bulan Madu (Honeymoon) 4 Hari 3 Malam ke Bali', category: 'Cincin Nikah, Mahar & Bulan Madu', vendor: 'Wonderful Tour & Travel', estimate: 8500000, paid: 3000000, status: 'DP', dueDate: '2027-03-20', notes: 'Tiket pesawat PP + resort bintang 4 private pool' }
         ],
         initialSavings: [
-          { id: 'init-1', category: 'Tabungan Awal Mempelai Pria', title: `Tabungan Awal ${groom} (Rekening Mandiri)`, amount: 42000000, date: '2026-05-01', notes: 'Dana tabungan pribadi sebelum lamaran' },
-          { id: 'init-2', category: 'Tabungan Awal Mempelai Wanita', title: `Tabungan Awal ${bride} (Reksadana Pasar Uang)`, amount: 33000000, date: '2026-05-05', notes: 'Pencairan tabungan awal calon pengantin wanita' },
-          { id: 'init-3', category: 'Kontribusi Orang Tua / Keluarga', title: 'Bantuan Modal Awal Keluarga Besar', amount: 30000000, date: '2026-06-15', notes: 'Dukungan keluarga untuk gedung & katering' }
+          { id: 'init-1', category: 'Tabungan Awal Mempelai Pria', title: 'Tabungan Pribadi Raka', amount: 35000000, date: '2026-06-01', notes: 'Rekening BCA Utama' },
+          { id: 'init-2', category: 'Tabungan Awal Mempelai Wanita', title: 'Tabungan Pribadi Nadya', amount: 30000000, date: '2026-06-01', notes: 'Rekening Mandiri Utama' },
+          { id: 'init-3', category: 'Kontribusi Orang Tua / Keluarga', title: 'Bantuan Keluarga Besar', amount: 20000000, date: '2026-07-15', notes: 'Komitmen orang tua' }
         ],
         monthlySavings: [
-          { id: 'mon-1', month: '2026-06', contributor: 'Mempelai Pria', amount: 4500000, notes: 'Setoran rutin gaji bulan Juni' },
-          { id: 'mon-2', month: '2026-06', contributor: 'Mempelai Wanita', amount: 3500000, notes: 'Setoran rutin gaji bulan Juni' },
-          { id: 'mon-3', month: '2026-07', contributor: 'Tabungan Bersama', amount: 8000000, notes: 'Autodebet rekening bersama bulan Juli' },
-          { id: 'mon-4', month: '2026-08', contributor: 'Tabungan Bersama', amount: 8000000, notes: 'Setoran rutin bulan Agustus (pasca lamaran)' },
-          { id: 'mon-5', month: '2026-09', contributor: 'Mempelai Pria', amount: 5000000, notes: 'Setoran rutin September + lembur' },
-          { id: 'mon-6', month: '2026-09', contributor: 'Mempelai Wanita', amount: 3500000, notes: 'Setoran rutin September' },
-          { id: 'mon-7', month: '2026-10', contributor: 'Bonus / THR', amount: 10000000, notes: 'Alokasi bonus proyek triwulan III' },
-    // 4. STATE APLIKASI & SINKRONISASI CLOUD FIRESTORE
+          { id: 'mon-1', month: '2026-07', contributor: 'Mempelai Pria', amount: 5000000, notes: 'Setoran rutin bulan Juli' },
+          { id: 'mon-2', month: '2026-07', contributor: 'Mempelai Wanita', amount: 4000000, notes: 'Setoran rutin bulan Juli' },
+          { id: 'mon-3', month: '2026-08', contributor: 'Tabungan Bersama', amount: 10000000, notes: 'Bonus kerja & THR' },
+          { id: 'mon-4', month: '2026-08', contributor: 'Mempelai Pria', amount: 5000000, notes: 'Setoran rutin Agustus' },
+          { id: 'mon-5', month: '2026-09', contributor: 'Mempelai Pria', amount: 5000000, notes: 'Setoran rutin September' },
+          { id: 'mon-6', month: '2026-09', contributor: 'Mempelai Wanita', amount: 4000000, notes: 'Setoran rutin September' },
+          { id: 'mon-7', month: '2026-10', contributor: 'Tabungan Bersama', amount: 8000000, notes: 'Tabungan bersama triwulan' }
+        ],
+        checklist: [
+          { id: 'c-1', phase: 1, title: 'Diskusi konsep pernikahan & menyusun daftar tamu awal', done: true },
+          { id: 'c-2', phase: 1, title: 'Pertemuan keluarga besar & menentukan tanggal lamaran serta pernikahan', done: true },
+          { id: 'c-3', phase: 1, title: 'Acara lamaran resmi & tukar cincin tunangan', done: true },
+          { id: 'c-4', phase: 2, title: 'Booking gedung / venue akad dan resepsi', done: true },
+          { id: 'c-5', phase: 2, title: 'DP vendor katering utama & dekorasi pelaminan', done: true },
+          { id: 'c-6', phase: 2, title: 'Booking fotografer & videografer liputan pernikahan', done: true },
+          { id: 'c-7', phase: 3, title: 'Pemeriksaan kesehatan pra-nikah (MCU) di laboratorium', done: true },
+          { id: 'c-8', phase: 3, title: 'Pendaftaran berkas pernikahan ke KUA / Catatan Sipil', done: false },
+          { id: 'c-9', phase: 3, title: 'Fitting busana pengantin (kebaya akad & jas)', done: false },
+          { id: 'c-10', phase: 3, title: 'Pemesanan undangan cetak & pembuatan website undangan digital', done: false },
+          { id: 'c-11', phase: 4, title: 'Distribusi undangan fisik & digital kepada tamu undangan', done: false },
+          { id: 'c-12', phase: 4, title: 'Pelunasan seluruh termin pembayaran vendor (H-30)', done: false },
+          { id: 'c-13', phase: 4, title: 'Gladi bersih (technical meeting) di lokasi acara bersama vendor & keluarga', done: false },
+          { id: 'c-14', phase: 5, title: 'Pelaksanaan akad nikah & resepsi pernikahan (Hari-H)', done: false },
+          { id: 'c-15', phase: 5, title: 'Keberangkatan bulan madu (honeymoon) & evaluasi vendor', done: false }
+        ]
+      };
+    }
+
+    // 4. STATE APLIKASI & SINKRONISASI FIREBASE REALTIME DATABASE
     let appData = getDefaultData();
     let activeTab = 'overview';
     let selectedCategoryFilter = 'ALL';
@@ -1472,26 +1445,44 @@
     let savingsAccumulationChart = null;
     let countdownInterval = null;
 
-    // Membersihkan nilai undefined atau NaN sebelum dikirim ke Cloud Firestore
-    function sanitizeForFirestore(value) {
+    // Membersihkan nilai undefined atau NaN sebelum dikirim ke Firebase Realtime Database
+    function sanitizeForRTDB(value) {
       if (value === undefined) return null;
       if (typeof value === 'number') {
         return Number.isFinite(value) ? value : 0;
       }
       if (Array.isArray(value)) {
-        return value.map(item => sanitizeForFirestore(item));
+        return value.map(item => sanitizeForRTDB(item));
       }
       if (value !== null && typeof value === 'object') {
         const cleanObj = {};
         Object.keys(value).forEach(key => {
           const val = value[key];
           if (val !== undefined) {
-            cleanObj[key] = sanitizeForFirestore(val);
+            cleanObj[key] = sanitizeForRTDB(val);
           }
         });
         return cleanObj;
       }
       return value;
+    }
+
+    // Konversi otomatis objek bernomor RTDB kembali menjadi array bersih
+    function ensureArrayFromRTDB(val, fallbackArr = []) {
+      if (!val) return Array.isArray(fallbackArr) ? fallbackArr : [];
+      if (Array.isArray(val)) return val.filter(Boolean);
+      if (typeof val === 'object') {
+        return Object.keys(val)
+          .sort((a, b) => {
+            const na = Number(a);
+            const nb = Number(b);
+            if (!Number.isNaN(na) && !Number.isNaN(nb)) return na - nb;
+            return a.localeCompare(b);
+          })
+          .map(k => val[k])
+          .filter(Boolean);
+      }
+      return Array.isArray(fallbackArr) ? fallbackArr : [];
     }
 
     function normalizeAppData(raw, fallbackDisplayName) {
@@ -1507,6 +1498,8 @@
         bride = parts[1] || def.profile.brideName;
       }
 
+      const rawInitial = raw.initialFunds !== undefined ? raw.initialFunds : raw.initialSavings;
+
       return {
         profile: {
           groomName: groom || def.profile.groomName,
@@ -1515,10 +1508,10 @@
           engagementDate: p.engagementDate || def.profile.engagementDate,
           location: p.location || def.profile.location
         },
-        items: Array.isArray(raw.items) ? raw.items : def.items,
-        initialSavings: Array.isArray(raw.initialSavings) ? raw.initialSavings : [],
-        monthlySavings: Array.isArray(raw.monthlySavings) ? raw.monthlySavings : [],
-        checklist: Array.isArray(raw.checklist) ? raw.checklist : def.checklist
+        items: raw.items !== undefined ? ensureArrayFromRTDB(raw.items, []) : def.items,
+        initialSavings: rawInitial !== undefined ? ensureArrayFromRTDB(rawInitial, []) : [],
+        monthlySavings: raw.monthlySavings !== undefined ? ensureArrayFromRTDB(raw.monthlySavings, []) : [],
+        checklist: raw.checklist !== undefined ? ensureArrayFromRTDB(raw.checklist, []) : def.checklist
       };
     }
 
@@ -1531,23 +1524,66 @@
       if (state === 'saving') {
         badge.className = 'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-500/30 backdrop-blur-md border border-amber-200/50 text-xs font-bold';
         dot.className = 'w-2 h-2 rounded-full bg-amber-300 animate-ping';
-        text.textContent = customText || 'Menyimpan ke Cloud...';
+        text.textContent = customText || 'Menyimpan...';
       } else if (state === 'synced') {
         badge.className = 'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/30 backdrop-blur-md border border-emerald-200/40 text-xs font-bold';
         dot.className = 'w-2 h-2 rounded-full bg-emerald-300';
         text.textContent = customText || 'Tersinkron ke Firebase';
       } else {
-        badge.className = 'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-rose-950/45 backdrop-blur-md border border-rose-200/40 text-xs font-bold';
+        badge.className = 'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-rose-950/60 backdrop-blur-md border border-rose-200/50 text-xs font-bold';
         dot.className = 'w-2 h-2 rounded-full bg-rose-300';
         text.textContent = customText || 'Gagal Sync Cloud';
       }
     }
 
-    function getUserDashboardDocRef(uid) {
-      return doc(db, 'artifacts', appId, 'users', uid, 'wedding_dashboard', 'main');
+    function getUserDashboardRef(uid) {
+      return ref(db, `wedding_dashboards/${uid}`);
     }
 
-    async function saveToFirebase() {
+    async function writeNowToRTDB() {
+      if (!currentUser) return;
+
+      if (!db || !firebaseReady) {
+        setCloudSyncIndicator('error', 'Firebase Belum Terhubung');
+        return;
+      }
+
+      try {
+        isLocalWriting = true;
+        setCloudSyncIndicator('saving', 'Menyimpan...');
+
+        const userRef = getUserDashboardRef(currentUser.uid);
+        const cleanPayload = sanitizeForRTDB({
+          profile: appData.profile,
+          items: appData.items,
+          initialFunds: appData.initialSavings,
+          initialSavings: appData.initialSavings,
+          monthlySavings: appData.monthlySavings,
+          checklist: appData.checklist,
+          ownerEmail: currentUser.email || '',
+          updatedAt: new Date().toISOString()
+        });
+
+        await set(userRef, cleanPayload);
+        setCloudSyncIndicator('synced', 'Tersinkron ke Firebase');
+      } catch (err) {
+        console.error('Firebase Realtime Database write error:', err);
+        const isPermDenied = (err?.code || '').includes('permission') || (err?.message || '').toLowerCase().includes('permission');
+        const errMsg = isPermDenied
+          ? 'Izin Ditolak (Periksa Rules RTDB)'
+          : 'Gagal Simpan ke Cloud';
+        setCloudSyncIndicator('error', errMsg);
+        showToast(
+          isPermDenied
+            ? 'Akses ditolak oleh Firebase Realtime Database Rules. Pastikan aturan baca/tulis untuk wedding_dashboards/$uid diizinkan (atau gunakan mode Test).'
+            : 'Gagal menyimpan ke Firebase: ' + (err?.message || 'Periksa koneksi internet Anda.')
+        );
+      } finally {
+        setTimeout(() => { isLocalWriting = false; }, 350);
+      }
+    }
+
+    async function saveToFirebase(immediate = true) {
       if (!currentUser) return;
 
       // Cadangan lokal per user.uid
@@ -1557,34 +1593,14 @@
         console.warn('Local cache warning:', e);
       }
 
-      if (!db || !firebaseReady) {
-        setCloudSyncIndicator('error', 'Firebase Belum Terhubung');
-        return;
-      }
-
-      try {
-        isLocalWriting = true;
-        setCloudSyncIndicator('saving', 'Menyimpan ke Cloud...');
-
-        const userDocRef = getUserDashboardDocRef(currentUser.uid);
-        const cleanPayload = sanitizeForFirestore({
-          profile: appData.profile,
-          items: appData.items,
-          initialSavings: appData.initialSavings,
-          monthlySavings: appData.monthlySavings,
-          checklist: appData.checklist,
-          ownerEmail: currentUser.email || '',
-          updatedAt: new Date().toISOString()
-        });
-
-        await setDoc(userDocRef, cleanPayload, { merge: true });
-        setCloudSyncIndicator('synced', 'Tersinkron ke Firebase');
-      } catch (err) {
-        console.error('Cloud Firestore write error:', err);
-        setCloudSyncIndicator('error', 'Gagal Simpan ke Cloud');
-        showToast('Gagal menyimpan ke Firebase: ' + (err?.message || 'Periksa koneksi internet Anda.'));
-      } finally {
-        setTimeout(() => { isLocalWriting = false; }, 350);
+      clearTimeout(saveDebounceTimer);
+      if (immediate) {
+        await writeNowToRTDB();
+      } else {
+        setCloudSyncIndicator('saving', 'Menyimpan...');
+        saveDebounceTimer = setTimeout(() => {
+          writeNowToRTDB();
+        }, 400);
       }
     }
 
@@ -1607,20 +1623,19 @@
       } catch (e) {}
 
       if (!db || !firebaseReady) {
-        setCloudSyncIndicator('error', 'Layanan Cloud Tidak Tersedia');
+        setCloudSyncIndicator('error', 'Layanan RTDB Tidak Tersedia');
         return;
       }
 
       setCloudSyncIndicator('saving', 'Menyinkronkan Cloud...');
-      const userDocRef = getUserDashboardDocRef(user.uid);
+      const userRef = getUserDashboardRef(user.uid);
 
-      unsubscribeCloudListener = onSnapshot(
-        userDocRef,
-        async (docSnap) => {
-          if (docSnap.exists()) {
-            const cloudVal = docSnap.data();
-            // Hindari loop tulis-baca saat perangkat ini sedang menyimpan perubahan lokal
-            if (!isLocalWriting && !docSnap.metadata.hasPendingWrites) {
+      unsubscribeCloudListener = onValue(
+        userRef,
+        async (snapshot) => {
+          if (snapshot.exists()) {
+            const cloudVal = snapshot.val();
+            if (!isLocalWriting) {
               appData = normalizeAppData(cloudVal, user.displayName);
               try {
                 localStorage.setItem(DATA_CACHE_PREFIX + user.uid, JSON.stringify(appData));
@@ -1629,16 +1644,21 @@
             }
             setCloudSyncIndicator('synced', 'Tersinkron ke Firebase');
           } else {
-            // Login pertama kali: inisialisasi data default pernikahan dan simpan langsung ke Firestore
+            // Login pertama kali: inisialisasi data default pernikahan dan simpan ke RTDB
             appData = getDefaultData(user.displayName);
             refreshAll();
-            await saveToFirebase();
+            await writeNowToRTDB();
           }
         },
         (error) => {
-          console.error('Cloud Firestore onSnapshot error:', error);
-          setCloudSyncIndicator('error', 'Akses Cloud Gagal');
-          showToast('Gagal menyinkronkan data dari Firebase: ' + (error?.message || 'Akses ditolak'));
+          console.error('Firebase Realtime Database onValue error:', error);
+          const isPermDenied = (error?.code || '').includes('permission') || (error?.message || '').toLowerCase().includes('permission');
+          setCloudSyncIndicator('error', isPermDenied ? 'Izin Ditolak (Rules RTDB)' : 'Akses Cloud Gagal');
+          showToast(
+            isPermDenied
+              ? 'Izin baca ditolak oleh Rules Realtime Database Firebase. Atur Rules menjadi true untuk membaca/menulis.'
+              : 'Gagal menyinkronkan data dari Firebase: ' + (error?.message || 'Akses ditolak')
+          );
         }
       );
     }
@@ -1660,7 +1680,7 @@
         case 'auth/too-many-requests':
           return 'Terlalu banyak percobaan gagal. Tunggu beberapa saat sebelum mencoba lagi.';
         case 'auth/operation-not-allowed':
-          return 'Metode login Email/Password belum diaktifkan pada proyek Firebase.';
+          return 'Metode login Email/Password belum diaktifkan pada proyek Firebase (Aktifkan di Console -> Authentication -> Sign-in method).';
         case 'auth/network-request-failed':
           return 'Koneksi internet terputus. Periksa jaringan Anda lalu coba lagi.';
         default:
@@ -1829,67 +1849,14 @@
       );
     };
 
-    // 6. PENGELOLA KONFIGURASI FIREBASE MODAL
-    function updateAuthFirebaseStatusUI() {
-      const badge = document.getElementById('authFirebaseStatusBadge');
-      if (!badge) return;
-      if (firebaseReady) {
-        badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-500"></span><span class="text-emerald-700">Firebase Terhubung (${escapeHTML(activeFirebaseConfig.projectId)})</span>`;
-      } else {
-        badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-amber-500 animate-ping"></span><span class="text-amber-700">Config Firebase Belum Diisi</span>`;
-      }
-    }
-
-    window.openFirebaseConfigModal = function() {
-      const ta = document.getElementById('firebaseConfigTextarea');
-      if (ta) {
-        ta.value = JSON.stringify(activeFirebaseConfig, null, 2);
-      }
-      openModal('firebaseConfigModal');
-    };
-
-    function parseFirebaseConfigInput(rawText) {
-      let text = rawText.trim();
-      // Ambil bagian di dalam kurung kurawal pertama dan terakhir jika user paste `const firebaseConfig = { ... };`
-      const firstBrace = text.indexOf('{');
-      const lastBrace = text.lastIndexOf('}');
-      if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
-        text = text.slice(firstBrace, lastBrace + 1);
-      }
-
-      // Coba JSON.parse langsung
-      try {
-        return JSON.parse(text);
-      } catch (e) {
-        // Ubah JS object literal (key tanpa tanda kutip) menjadi JSON valid
-        const jsonified = text
-          .replace(/,\s*}/g, '}')
-          .replace(/,\s*]/g, ']')
-          .replace(/(['"])?([a-zA-Z0-9_]+)(['"])?\s*:/g, '"$2":')
-          .replace(/'/g, '"');
-        return JSON.parse(jsonified);
-      }
-    }
-
-    window.saveCustomFirebaseConfig = function(e) {
-      e.preventDefault();
-      const raw = document.getElementById('firebaseConfigTextarea').value;
-      try {
-        const parsed = parseFirebaseConfigInput(raw);
-        if (!parsed || !parsed.apiKey || !parsed.projectId) {
-          throw new Error('Objek harus memiliki minimal apiKey dan projectId.');
-        }
-        localStorage.setItem(FIREBASE_CONFIG_STORAGE_KEY, JSON.stringify(parsed));
-        showToast('Konfigurasi Firebase disimpan! Memuat ulang...');
-        setTimeout(() => window.location.reload(), 650);
     // 6. STATUS KONEKSI FIREBASE DI LAYAR LOGIN
     function updateAuthFirebaseStatusUI() {
       const badge = document.getElementById('authFirebaseStatusBadge');
       if (!badge) return;
       if (firebaseReady) {
-        badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-500"></span><span class="text-emerald-700">Terhubung ke Firebase Cloud Authentication</span>`;
+        badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-500"></span><span class="text-emerald-700">Terhubung ke Firebase (${firebaseConfig.projectId})</span>`;
       } else {
-        badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-rose-500"></span><span class="text-rose-700">Konfigurasi Firebase Environment Tidak Ditemukan</span>`;
+        badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-rose-500"></span><span class="text-rose-700">Gagal Menghubungkan Layanan Firebase</span>`;
       }
     }
 
